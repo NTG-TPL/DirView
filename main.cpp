@@ -6,6 +6,7 @@
 #include <QTreeView>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
+#include <QDir>
 
 int main(int argc, char *argv[])
 {
@@ -22,8 +23,10 @@ int main(int argc, char *argv[])
     parser.addOption(dontWatchOption);
     parser.addPositionalArgument("directory", "The directory to start in.");
     parser.process(app);
-    const QString rootPath = parser.positionalArguments().isEmpty()
-        ? QString() : parser.positionalArguments().first();
+
+    const QString homePath = parser.positionalArguments().isEmpty()
+        ? QDir::homePath() : parser.positionalArguments().first();
+
 
     QFileSystemModel model;
     model.setRootPath("");
@@ -33,8 +36,8 @@ int main(int argc, char *argv[])
         model.setOption(QFileSystemModel::DontWatchForChanges);
     QTreeView tree;
     tree.setModel(&model);
-    if (!rootPath.isEmpty()) {
-        const QModelIndex rootIndex = model.index(QDir::cleanPath(rootPath));
+    if (!homePath.isEmpty()) {
+        const QModelIndex rootIndex = model.index(QDir::cleanPath(homePath));
         if (rootIndex.isValid())
             tree.setRootIndex(rootIndex);
     }
