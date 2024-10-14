@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
 
     QFileSystemModel model;
     model.setRootPath("");
+    model.setFilter(QDir::AllEntries | QDir::Hidden);
     if (parser.isSet(dontUseCustomDirectoryIconsOption))
         model.setOption(QFileSystemModel::DontUseCustomDirectoryIcons);
     if (parser.isSet(dontWatchOption))
