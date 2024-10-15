@@ -1,6 +1,5 @@
 #include <QScreen>
 #include <QScroller>
-#include <QDebug>
 
 #include <chrono>
 
@@ -55,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::onDirectoryLoaded(const QString &path)
 {
     if (path == QDir::homePath()) {
-        QModelIndex homeIndex = fileSystemModel->index(QDir::cleanPath(QDir::homePath()));
+        QModelIndex homeIndex = fileSystemModel->index(path);
         loadAllNodes(homeIndex);
         filterLineEdit->setPlaceholderText("Введите название файла/папки ...");
         filterLineEdit->setEnabled(true);
@@ -90,6 +89,8 @@ void MainWindow::loadAllNodes(const QModelIndex &index)
     for (int i = 0; i < rowCount; ++i) {
         QModelIndex childIndex = fileSystemModel->index(i, 0, index);
         if (fileSystemModel->canFetchMore(childIndex)) {
+            QString path = fileSystemModel->filePath(childIndex);
+            fileSystemModel->addWatcherPath(path);
             fileSystemModel->fetchMore(childIndex);
         }
         loadAllNodes(childIndex);
